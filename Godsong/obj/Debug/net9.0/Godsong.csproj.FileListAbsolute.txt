@@ -1,0 +1,14 @@
+D:\Jeux Story\Godsong\bin\Debug\net9.0\Godsong.exe
+D:\Jeux Story\Godsong\bin\Debug\net9.0\Godsong.deps.json
+D:\Jeux Story\Godsong\bin\Debug\net9.0\Godsong.runtimeconfig.json
+D:\Jeux Story\Godsong\bin\Debug\net9.0\Godsong.dll
+D:\Jeux Story\Godsong\bin\Debug\net9.0\Godsong.pdb
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.GeneratedMSBuildEditorConfig.editorconfig
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.AssemblyInfoInputs.cache
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.AssemblyInfo.cs
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.csproj.CoreCompileInputs.cache
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.dll
+D:\Jeux Story\Godsong\obj\Debug\net9.0\refint\Godsong.dll
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.pdb
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.genruntimeconfig.cache
+D:\Jeux Story\Godsong\obj\Debug\net9.0\ref\Godsong.dll

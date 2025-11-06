@@ -46,12 +46,20 @@ namespace Godsong
         {
             int roll = RollDice();
             int damage = Attack + roll - player.Defense;
-
-            if ( damage < 0)
-            damage = 0;
-
-            Console.WriteLine($"{Name} attacks {player.Name} and rolls a {roll}!");
-            player.TakeDamage(damage);
+            if (damage < 0)
+                damage = 0;
+            if (player.IsCountering)
+            {
+                Util.TypeWrite($"{player.Name} parries the attack!");
+                Util.TypeWrite($"{player.Name} reflects {damage} damage back to {Name}!");
+                TakeDamage(damage);
+                player.DeactivateCounter();
+            }
+            else
+            {
+                Console.WriteLine($"{Name} attacks {player.Name} and rolls a {roll}!");
+                player.TakeDamage(damage);
+            }
         }
 
         //Take damage from player

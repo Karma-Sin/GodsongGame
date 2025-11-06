@@ -6,6 +6,10 @@ namespace Godsong
 
     public class Player
     {
+
+        //States/buffs
+        public bool IsCountering { get; set; } = false;
+
         //Basic information 
         public string Name { get; set; }
 
@@ -123,6 +127,14 @@ namespace Godsong
             Attack += attack;
             MaxHP += maxHP;
             Defense += defense;
+        }
+        public void ActivateCounter()
+        {
+            IsCountering = true;
+        }
+        public void DeactivateCounter()
+        {
+            IsCountering = false;
         }
     } 
 }

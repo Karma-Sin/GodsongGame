@@ -26,9 +26,28 @@ namespace Godsong
             }
         );
 
-        public static Skill = new Skill(
-""
-        )
+        public static Skill HumanCounter = new Skill(
+        "Full Counter",
+        "Concentate to fully parry and reflect damage",
+        0,
+        SkillType.Attack,
+        (player, enemy) =>
+        {
+            Util.TypeWrite($"{player.Name} braces for Full Counter!");
+
+            // Simulate enemy attack to calculate damage
+            int roll = new Random().Next(1, enemy.DiceSides + 1);
+            int damage = enemy.Attack + roll - player.Defense;
+            if (damage < 0) damage = 0;
+
+            // Reflect damage back to enemy
+            Util.TypeWrite($"{player.Name} reflects {damage} damage back to {enemy.Name}!");
+            enemy.TakeDamage(damage);
+
+            // Optional: player takes no damage this turn (fully parried)
+            Util.TypeWrite($"{player.Name} takes no damage this turn!");
+        }
+        );
         public static Skill HumanLaststand = new Skill
         (
             "Last Stand",

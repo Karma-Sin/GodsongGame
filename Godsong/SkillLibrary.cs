@@ -59,6 +59,12 @@ namespace Godsong
                 player.ApplyBuff(defense: 5, heal: 20);
             }
         );
+public static Skill HumanLunge = new Skill(
+"",
+"",
+0,
+SkillType.Attack,
+(player, enemy)=>)
     }
 
 }

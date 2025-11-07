@@ -5,12 +5,11 @@ namespace Godsong
 {
     public static class SkillLibrary
     {
-        // Shared Random instance for all skills
-        private static Random rng = new Random();
+        private static Random rng = new Random(); // single shared RNG
 
-        // =====================
+        // =======================
         // Human Skills
-        // =====================
+        // =======================
 
         public static Skill HumanStrike = new Skill(
             "Quick Slash",
@@ -34,10 +33,13 @@ namespace Godsong
             (player, enemy) =>
             {
                 Util.TypeWrite($"{player.Name} braces for Full Counter!");
+
                 int roll = rng.Next(1, enemy.DiceSides + 1);
                 int damage = Math.Max(0, enemy.Attack + roll - player.Defense);
+
                 Util.TypeWrite($"{player.Name} reflects {damage} damage back to {enemy.Name}!");
                 enemy.TakeDamage(damage);
+
                 Util.TypeWrite($"{player.Name} takes no damage this turn!");
             }
         );
@@ -55,22 +57,25 @@ namespace Godsong
 
         public static Skill HumanLunge = new Skill(
             "Lunge",
-            "Thrust forward, causing Bleed",
+            "Thrust forward, poking a hole in the opponent's flesh causing Bleed",
             5,
             SkillType.Attack,
             (player, enemy) =>
             {
                 int roll = player.RollDice();
                 int damage = Math.Max(0, player.Attack + roll - enemy.Defense);
+                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Lunge for {damage} damage!");
                 enemy.TakeDamage(damage);
+
+                // Apply cloned Bleed effect
                 StatusEffect bleed = StatusEffectLibrary.Bleed.Clone();
                 enemy.AddEffect(bleed, player);
             }
         );
 
-        // =====================
+        // =======================
         // Goblin Skills
-        // =====================
+        // =======================
 
         public static Skill GoblinSuckerPunch = new Skill(
             "Sucker Punch",
@@ -105,7 +110,7 @@ namespace Godsong
 
         public static Skill GoblinTinkererArmor = new Skill(
             "Tinkerer's Armor",
-            "Muster up various items to form Armor (Crumbles every turn)",
+            "Muster up various items from your loot bag to form Armor (Crumbles every turn)",
             0,
             SkillType.Buff,
             (player, enemy) =>
@@ -138,7 +143,7 @@ namespace Godsong
 
         public static Skill GoblinOilFlare = new Skill(
             "Oil Flare",
-            "Spray flammable oil, causing Burn",
+            "Spray flammable oil, causing the target to burn over time",
             3,
             SkillType.Attack,
             (player, enemy) =>
@@ -148,7 +153,8 @@ namespace Godsong
                 Util.TypeWrite($"{player.Name} hits {enemy.Name} with Oil Flare for {damage} damage!");
                 enemy.TakeDamage(damage);
 
-                StatusEffect burnEffect = StatusEffectLibrary.burn.Clone();
+                // Apply cloned Burn effect
+                StatusEffect burnEffect = StatusEffectLibrary.Burn.Clone();
                 enemy.AddEffect(burnEffect, player);
             }
         );

@@ -83,6 +83,13 @@ namespace Godsong
 
         public void TakeDamage(int amount)
         {
+// Check for Rage when taking damage
+var rageEffect = ActiveEffects.Find(e => e.Name == "Rage");
+if (rageEffect != null)
+{
+    Attack += rageEffect.Power;
+    Util.TypeWrite($"{Name} grows enraged! Attack +{rageEffect.Power} (now {Attack})");
+}
             HP -= amount;
             if (HP < 0) HP = 0;
 

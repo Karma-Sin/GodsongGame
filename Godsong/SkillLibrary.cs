@@ -158,5 +158,103 @@ namespace Godsong
                 enemy.AddEffect(burnEffect, player);
             }
         );
+
+// Basic ranged attack
+public static Skill FuryBolt = new Skill(
+    "Fury Bolt",
+    "Launch a bolt of arcane energy, damage increases with fury.",
+    3, // base damage
+    SkillType.Attack,
+    (player, enemy) =>
+    {
+        int roll = player.RollDice();
+        int damage = Math.Max(0, player.Attack + roll - enemy.Defense);
+        Util.TypeWrite($"{player.Name} fires a Fury Bolt at {enemy.Name} for {damage} damage!");
+        enemy.TakeDamage(damage);
+    }
+);
+
+// Buff: Fury Surge (applies Rage buff for 3 turns)
+public static Skill FurySurge = new Skill(
+    "Fury Surge",
+    "Channel inner rage, gaining a fury buff for 3 turns (increases attack).",
+    0,
+    SkillType.Buff,
+    (player, enemy) =>
+    {
+        StatusEffect rageBuff = new StatusEffect(
+            name: "Fury Surge",
+            description: "Increased attack for 3 turns",
+            duration: 3,
+            power: 2, // attack increase per hit
+            isBuff: true,
+            tickEffect: null,
+            onApplyEffect: (p, e) =>
+            {
+                Util.TypeWrite($"{p.Name} is empowered by Fury Surge! (+2 Attack)");
+            },
+            onExpireEffect: (p, e) =>
+            {
+                Util.TypeWrite($"{p.Name}'s Fury Surge fades.");
+            }
+        );
+
+        player.AddEffect(rageBuff, enemy);
+    }
+);
+
+// Strong melee attack, stronger if Fury Surge is active
+public static Skill SeethingStrike = new Skill(
+    "Seething Strike",
+    "A melee strike that deals extra damage if Fury Surge is active.",
+    5, // base damage
+    SkillType.Attack,
+    (player, enemy) =>
+    {
+        int roll = player.RollDice();
+        int damage = player.Attack + roll - enemy.Defense;
+
+        // Check if Fury Surge buff is active
+        if (player.HasEffect("Fury Surge"))
+        {
+            damage += 3; // bonus damage
+            Util.TypeWrite($"{player.Name}'s fury empowers the strike!");
+        }
+
+        damage = Math.Max(0, damage);
+        Util.TypeWrite($"{player.Name} hits {enemy.Name} with Seething Strike for {damage} damage!");
+        enemy.TakeDamage(damage);
+    }
+);
+
+// AoE damage skill, interacts with Fury Surge
+public static Skill ArcaneEmber = new Skill(
+    "Arcane Ember",
+    "Release fiery arcane embers, deals AoE damage and burns enemies.",
+    2, // base damage per target
+    SkillType.Attack,
+    (player, enemies) =>
+    {
+        foreach (var enemy in enemies)
+        {
+            int roll = player.RollDice();
+            int damage = player.Attack + roll - enemy.Defense;
+
+            // Check if Fury Surge is active for bonus
+            if (player.HasEffect("Fury Surge"))
+            {
+                damage += 2;
+            }
+
+            damage = Math.Max(0, damage);
+            Util.TypeWrite($"{player.Name} hits {enemy.Name} with Arcane Ember for {damage} damage!");
+            enemy.TakeDamage(damage);
+
+            // Apply burn effect
+            StatusEffect burnEffect = StatusEffectLibrary.burn.Clone();
+            enemy.AddEffect(burnEffect, player);
+        }
+    }
+);
     }
 }

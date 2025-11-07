@@ -130,6 +130,8 @@ SkillType.Attack,
 (player, enemy) =>
 {
             StatusEffect shield = StatusEffectLibrary.Shield.Clone();
+shield.Power = 10;
+shield.Duration = 3;
             enemy.AddEffect(shield, player);
 }
 );

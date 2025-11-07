@@ -11,7 +11,7 @@ namespace Godsong
         {
             AddHumanCard();
             AddGoblinCard();
-            AddTemplateCard1();
+            AddRageMageCard();
             AddTemplateCard2();
             AddTemplateCard3();
         }
@@ -51,21 +51,25 @@ namespace Godsong
         // ------------------------------
         // Blank templates ready to fill
         // ------------------------------
-        private static void AddTemplateCard1()
+
+    private static void AddRageMageCard()
+{
+    AllCards.Add(new CardTemplate(
+        "Rage Mage",
+        "A spellcaster fueled by fury, striking harder as their rage builds.",
+        1,  // Attack modifier
+        0,  // HP modifier
+        0,  // Defense modifier
+        new List<Skill>
         {
-            AllCards.Add(new CardTemplate(
-                "Template1",
-                "Description for Template1",
-                0, 0, 0,
-                new List<Skill>
-                {
-                    SkillLIbrary.HumanStrike,   // Replace with desired skill
-                    SkillLIbrary.HumanLunge,    // Replace with desired skill
-                    SkillLIbrary.HumanLaststand,// Replace with desired skill
-                    SkillLIbrary.HumanCounter   // Replace with desired skill
-                }
-            ).CreateCard());
+            SkillLIbrary.FuryBolt,
+            SkillLIbrary.FurySurge,
+            SkillLIbrary.SeethingStrike,
+            SkillLIbrary.ArcaneEmber
         }
+    ).CreateCard());
+}
+
 
         private static void AddTemplateCard2()
         {

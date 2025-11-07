@@ -159,23 +159,24 @@ namespace Godsong
         );
 
         // Increases speed or extra action
-        public static StatusEffect Haste = new StatusEffect(
-            name: "Haste",
-            description: "Increase speed or gain extra action",
-            duration: 2,
-            power: 0,
-            isBuff: true,
-            tickEffect: null,
-            onApplyEffect: (player, enemy) =>
-            {
-                // placeholder, add your speed/extra action logic
-            },
-            onExpireEffect: (player, enemy) =>
-            {
-                // remove haste effects if needed
-            }
-        );
-
+public static StatusEffect Haste = new StatusEffect(
+    name: "Haste",
+    description: "Grants 1 extra action per turn",
+    duration: 2,
+    power: 1, // extra actions
+    isBuff: true,
+    tickEffect: null,
+    onApplyEffect: (player, enemy) =>
+    {
+        player.AddExtraAction(1);
+        Util.TypeWrite($"{player.Name} is hasted! Gains 1 extra action this turn.");
+    },
+    onExpireEffect: (player, enemy) =>
+    {
+        player.UseAction(); // remove 1 extra action if still present
+        Util.TypeWrite($"{player.Name}'s Haste fades.");
+    }
+);
         // Boosts next skill's power, but could cause recoil
         public static StatusEffect Overcharge = new StatusEffect(
             name: "Overcharge",

@@ -75,6 +75,64 @@ namespace Godsong
             enemy.AddEffect(bleed, player);
         }
         );
+
+public static Skill GoblinSuckerPunch = new Skill(
+"Sucker Punch",
+"Await a moment of distraction and strike",
+0,
+SkillType.Attack,
+(player, enemy) =>
+{
+Random rng = new Random();
+                int roll = rng.Next(1, player.DiceSides + 1);
+                int damage = player.Attack + roll - enemy.Defense;
+                if (damage < 0) damage = 0;
+                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Sucker Punch for {damage} damage!");
+                enemy.TakeDamage(damage);
+}
+);
+
+public static Skill GoblinLanceBarrage = new Skill(
+"Lance Barrage",
+"Throw 3 makeshift spears",
+0,
+SkillType.Attack,
+(player, enemy) =>
+{
+Random rng = new Random();
+                int roll = rng.Next(1, player.DiceSides + 1);
+                int damage = player.Attack + roll - enemy.Defense;
+                if (damage < 0) damage = 0;
+                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
+                enemy.TakeDamage(damage);
+
+Random rng = new Random();
+                int roll = rng.Next(1, player.DiceSides + 1);
+                int damage = player.Attack + roll - enemy.Defense;
+                if (damage < 0) damage = 0;
+                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
+                enemy.TakeDamage(damage);
+
+Random rng = new Random();
+                int roll = rng.Next(1, player.DiceSides + 1);
+                int damage = player.Attack + roll - enemy.Defense;
+                if (damage < 0) damage = 0;
+                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
+                enemy.TakeDamage(damage);
+}
+);
+
+public static Skill GoblinTinkererArmor = new Skill(
+"",
+"",
+5,
+SkillType.Attack,
+(player, enemy) =>
+{
+
+}
+);
+
     }
 
 }

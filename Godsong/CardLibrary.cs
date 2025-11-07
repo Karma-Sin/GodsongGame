@@ -32,7 +32,10 @@ namespace Godsong
         {
             var goblinSkills = new List<Skill>
             {
-                
+                SkillLibrary.GoblinSuckerPunch,
+SkillLibary,GoblinSpearBarrage,
+SkillLibrary.GoblinTinkererArmor,
+SkillLibrary.GoblinOilFlare
             };
 
             AllCards.Add(new Card("Goblin", "Devious trickster wielding scraps and spite", 2, 1, 1));

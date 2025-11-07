@@ -12,3 +12,4 @@ D:\Jeux Story\Godsong\obj\Debug\net9.0\refint\Godsong.dll
 D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.pdb
 D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.genruntimeconfig.cache
 D:\Jeux Story\Godsong\obj\Debug\net9.0\ref\Godsong.dll
+D:\Jeux Story\Godsong\obj\Debug\net9.0\Godsong.sourcelink.json

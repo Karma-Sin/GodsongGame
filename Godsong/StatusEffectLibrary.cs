@@ -99,7 +99,7 @@ namespace Godsong
             }
         );
     
-        public static StatusEffect PowerUp = new StatusEffect(
+        public static StatusEffect AttackUp = new StatusEffect(
         name: "AttackUp",
         description: "Attack is increased by 10",
         duration: 2,
@@ -119,9 +119,92 @@ namespace Godsong
         }
     );
 
-    // ========================
-    // Add your custom statuses below
-    // ========================
+ // Reduces target's Defense
+        public static StatusEffect DefenseBreak = new StatusEffect(
+            name: "Defense Break",
+            description: "Reduces target's Defense",
+            duration: 3,         // default, can be modified
+            power: 2,            // how much Defense is reduced
+            isBuff: false,
+            tickEffect: (player, enemy) =>
+            {
+                // Example: could be empty if applied immediately
+            },
+            onApplyEffect: (player, enemy) =>
+            {
+                enemy.ModifyStats(defense: -2); // reduce defense
+            },
+            onExpireEffect: (player, enemy) =>
+            {
+                enemy.ModifyStats(defense: 2);  // restore defense
+            }
+        );
+
+        // Reduces target's Attack
+        public static StatusEffect Weakness = new StatusEffect(
+            name: "Weakness",
+            description: "Reduces target's Attack",
+            duration: 3,
+            power: 2,
+            isBuff: false,
+            tickEffect: null,
+            onApplyEffect: (player, enemy) =>
+            {
+                enemy.ModifyStats(attack: -2);
+            },
+            onExpireEffect: (player, enemy) =>
+            {
+                enemy.ModifyStats(attack: 2);
+            }
+        );
+
+        // Increases speed or extra action
+        public static StatusEffect Haste = new StatusEffect(
+            name: "Haste",
+            description: "Increase speed or gain extra action",
+            duration: 2,
+            power: 0,
+            isBuff: true,
+            tickEffect: null,
+            onApplyEffect: (player, enemy) =>
+            {
+                // placeholder, add your speed/extra action logic
+            },
+            onExpireEffect: (player, enemy) =>
+            {
+                // remove haste effects if needed
+            }
+        );
+
+        // Boosts next skill's power, but could cause recoil
+        public static StatusEffect Overcharge = new StatusEffect(
+            name: "Overcharge",
+            description: "Boost next skill power, but take recoil",
+            duration: 1,
+            power: 5, // example boost
+            isBuff: true,
+            tickEffect: null,
+            onApplyEffect: (player, enemy) =>
+            {
+                player.ModifyStats(); // modify next skill power
+            },
+            onExpireEffect: (player, enemy) =>
+            {
+                // handle recoil or removal
+            }
+        );
+
+        // Each time you take damage, gain Attack +1 (stacks)
+        public static StatusEffect Rage = new StatusEffect(
+            name: "Rage",
+            description: "Gain Attack each time you take damage",
+            duration: 3,
+            power: 1,
+            isBuff: true,
+            tickEffect: null,
+            onApplyEffect: null,
+            onExpireEffect: null
+        );
 }
 
     }

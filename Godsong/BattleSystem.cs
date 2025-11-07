@@ -56,51 +56,58 @@ namespace Godsong
             }
         }
 
-        private void PlayerTurn()
+       private void PlayerTurn()
+{
+    Util.TypeWrite($"\n{player.Name}'s turn!");
+    player.ProcessEffects(enemy);
+
+    // Determine max actions based on Haste
+    int maxActions = player.HasStatus("Haste") ? 3 : 2;
+    int actionsUsed = 0;
+    bool hasSwitched = false;
+
+    while (actionsUsed < maxActions)
+    {
+        Util.TypeWrite("\nChoose an action:");
+        Util.TypeWrite("1. Use Skill");
+
+        // Only allow switch once and only after first action
+        if (!hasSwitched && actionsUsed == 1)
+            Util.TypeWrite("2. Switch Card");
+
+        Util.TypeWrite(">");
+
+        ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+        Console.WriteLine();
+
+        if (key.Key == ConsoleKey.D1)
         {
-            Util.TypeWrite($"\n{player.Name}'s turn!");
-            player.ProcessEffects(enemy);
-
-            int actionsUsed = 0;
-            bool hasSwitched = false;
-
-            while (actionsUsed < 2)
+            if (UseSkill()) actionsUsed++;
+        }
+        else if (key.Key == ConsoleKey.D2 && !hasSwitched && actionsUsed == 1)
+        {
+            if (SwitchCard())
             {
-                Util.TypeWrite("\nChoose an action:");
-                Util.TypeWrite("1. Use Skill");
-                if (!hasSwitched && actionsUsed == 1)
-                    Util.TypeWrite("2. Switch Card");
-                Util.TypeWrite(">");
-
-                ConsoleKeyInfo key = Console.ReadKey(intercept: true);
-                Console.WriteLine();
-
-                if (key.Key == ConsoleKey.D1)
-                {
-                    if (UseSkill()) actionsUsed++;
-                }
-                else if (key.Key == ConsoleKey.D2 && !hasSwitched && actionsUsed == 1)
-                {
-                    if (SwitchCard())
-                    {
-                        hasSwitched = true;
-                    }
-                }
-                else
-                {
-                    Util.TypeWrite("Invalid choice!");
-                }
+                hasSwitched = true;
 
                 // Force skill after switch
-                if (hasSwitched && actionsUsed == 1)
-                {
-                    Util.TypeWrite("\nChoose a skill after switching:");
-                    if (UseSkill()) actionsUsed++;
-                }
+                Util.TypeWrite("\nChoose a skill after switching:");
+                if (UseSkill()) actionsUsed++;
             }
-
-            Util.TypeWrite("Turn ends.");
         }
+        else
+        {
+            Util.TypeWrite("Invalid choice!");
+        }
+
+        // Safety check if player somehow exceeds maxActions
+        if (actionsUsed >= maxActions)
+            break;
+    }
+
+    Util.TypeWrite("Turn ends.");
+}
+
 
         private bool UseSkill()
         {
@@ -112,7 +119,7 @@ namespace Godsong
                 return false;
             }
 
-            // Display skill list
+            // Display skills
             Util.TypeWrite($"{player.Name}'s Skills:");
             for (int i = 0; i < skills.Count; i++)
             {
@@ -153,9 +160,9 @@ namespace Godsong
 
         private bool SwitchCard()
         {
-            // Display available cards
             Util.TypeWrite("Available Cards:");
             var allCards = CardLibrary.AllCards;
+
             for (int i = 0; i < allCards.Count; i++)
             {
                 Card card = allCards[i];

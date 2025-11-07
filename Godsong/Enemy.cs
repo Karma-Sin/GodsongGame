@@ -16,11 +16,11 @@ namespace Godsong
 
         // 🎲 Random dice roll (for attack variation)
         public int DiceSides { get; private set; }
-        
+
         //Rewards
-        public int ExperienceReward {get; private set;}
+        public int ExperienceReward { get; private set; }
         public int GoldReward { get; private set; }
-        
+
 
 
         // Constructor - sets up the enemy
@@ -37,7 +37,7 @@ namespace Godsong
         }
 
         //Roll a dice 
-        public int RollDice() 
+        public int RollDice()
         {
             Random rand = new Random();
             return rand.Next(1, DiceSides + 1);
@@ -76,10 +76,10 @@ namespace Godsong
 
             if (HP == 0)
             {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write($"{Name}");
-            Console.ResetColor();
-            Console.WriteLine(" has been defeated!");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($"{Name}");
+                Console.ResetColor();
+                Console.WriteLine(" has been defeated!");
             }
         }
 
@@ -103,8 +103,17 @@ namespace Godsong
             Console.ResetColor();
             Console.WriteLine($"{HP}/{MaxHP} HP");
         }
-        
-public List<StatusEffect> ActiveEffects { get; private set; } = new List<StatusEffect>();
+
+        public void ModifyStats(int attack = 0, int maxHP = 0, int defense = 0, int heal = 0)
+        {
+            Attack += attack;
+            MaxHP += maxHP;
+            Defense += defense;
+            if (heal > 0) Heal(heal);
+        }
+
+
+        public List<StatusEffect> ActiveEffects { get; private set; } = new List<StatusEffect>();
 
         public void AddEffect(StatusEffect effect, Player player)
         {
@@ -133,6 +142,24 @@ public List<StatusEffect> ActiveEffects { get; private set; } = new List<StatusE
             }
         }
 
+        //extra action
+        public int ExtraActions { get; private set; } = 0;
 
+        public void AddExtraAction(int amount)
+        {
+            ExtraActions += amount;
+        }
+
+        public void UseAction()
+        {
+            if (ExtraActions > 0)
+                ExtraActions--;
+        }
+
+        // Inside Enemy class
+        public bool HasStatus(string statusName)
+        {
+            return ActiveEffects.Exists(e => e.Name.Equals(statusName, StringComparison.OrdinalIgnoreCase) && !e.IsExpired);
+        }
     }
 }

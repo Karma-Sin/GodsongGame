@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Godsong")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21b13117ec80b68339ecce2a2d6155c96229b516")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a1c7aa1fbcea5648c8a8ea51b2dbc406e883b12")]
 [assembly: System.Reflection.AssemblyProductAttribute("Godsong")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Godsong")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

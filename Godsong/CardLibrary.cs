@@ -18,7 +18,11 @@ namespace Godsong
         {
             var humanSkills = new List<Skill>
             {
+                SkillLIbrary.HumanStrike,
+                SkillLIbrary.HumanLunge,
                 SkillLIbrary.HumanLaststand,
+                SkillLIbrary.HumanCounter
+
             };
 
             AllCards.Add(new Card("Human", "Balanced warrior of endurance", 0, 0, 0, humanSkills));

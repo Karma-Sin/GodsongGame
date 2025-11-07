@@ -52,42 +52,18 @@ namespace Godsong
             }
             if (newLine) Console.WriteLine();
         }
- // Apply a status effect to a target, cloning it automatically
-    public static void ApplyStatusEffect(StatusEffect template, Player player, Enemy enemy)
-    {
-        // Create a new instance based on the template
-        StatusEffect effectInstance = new StatusEffect(
-            name: template.Name,
-            description: template.Description,
-            duration: template.Duration,
-            power: template.Power,
-            isBuff: template.IsBuff,
-            tickEffect: template.TickEffect,
-            onApplyEffect: template.OnApplyEffect,
-            onExpireEffect: template.OnExpireEffect
-        );
+        // Apply a status effect to a target, cloning it automatically
+        public static void ApplyStatusEffect(StatusEffect template, Player player, Enemy enemy)
+        {
+            enemy.AddEffect(template.Clone(), player);
+        }
 
-        // Apply to enemy
-        enemy.AddEffect(effectInstance, player);
-    }
-
-        // Overload for applying to player
         public static void ApplyStatusEffect(StatusEffect template, Enemy enemy, Player player)
         {
-            StatusEffect effectInstance = new StatusEffect(
-                name: template.Name,
-                description: template.Description,
-                duration: template.Duration,
-                power: template.Power,
-                isBuff: template.IsBuff,
-                tickEffect: template.TickEffect,
-                onApplyEffect: template.OnApplyEffect,
-                onExpireEffect: template.OnExpireEffect
-            );
-
-            player.AddEffect(effectInstance, enemy);
+            player.AddEffect(template.Clone(), enemy);
         }
-            // Clone effect (so we can reuse library effects safely)
+
+         
 
 
     }

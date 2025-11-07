@@ -29,7 +29,7 @@ namespace Godsong
         public int Experience { get; private set; }
 
         // 🔸 Card / Class System
-        public Card CurrentCard { get; private set; }
+        public Card CurrentCard { get; private set; } = default!;
 
         // 🔸 Skills
         public List<string> Skills { get; private set; }
@@ -54,7 +54,7 @@ namespace Godsong
             Skills = new List<string>();
 
             // Equip default Human card
-            Card defaultCard = CardLibrary.GetCard("Human");
+            Card defaultCard = CardLibrary.GetCard("Human")!;
             EquipCard(defaultCard);
         }
 
@@ -179,5 +179,26 @@ namespace Godsong
                     ActiveEffects.RemoveAt(i);
             }
         }
+
+        public int ExtraActions { get; private set; } = 0;
+
+        public void AddExtraAction(int amount)
+        {
+            ExtraActions += amount;
+        }
+
+        //extra action
+        public void UseAction()
+        {
+            if (ExtraActions > 0)
+                ExtraActions--;
+        }
+
+        // HasStatus
+        public bool HasStatus(string statusName)
+        {
+            return ActiveEffects.Exists(e => e.Name.Equals(statusName, StringComparison.OrdinalIgnoreCase) && !e.IsExpired);
+        }
+
     }
 }

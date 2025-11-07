@@ -124,7 +124,7 @@ Random rng = new Random();
 
 public static Skill GoblinTinkererArmor = new Skill(
 "Tinkerer's Armor",
-"Muster up various items from your loot bag to form Armor",
+"Muster up various items from your loot bag to form Armor (Crumbles every turn)",
 5,
 SkillType.Attack,
 (player, enemy) =>
@@ -132,6 +132,11 @@ SkillType.Attack,
             StatusEffect shield = StatusEffectLibrary.Shield.Clone();
 shield.Power = 10;
 shield.Duration = 3;
+
+shield.TickEffect = (player,enemy)=>
+{
+player.ModifyStats(defense : -2);
+}
             enemy.AddEffect(shield, player);
 }
 );

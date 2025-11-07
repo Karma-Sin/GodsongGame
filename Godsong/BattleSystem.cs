@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Godsong
 {
@@ -8,6 +6,7 @@ namespace Godsong
     {
         Victory, Defeat
     }
+
     public class BattleSystem
     {
         private Player player;
@@ -20,11 +19,8 @@ namespace Godsong
             this.enemy = enemy;
         }
 
-       
-
         public BattleResult StartBattle()
         {
-            // Battle start message
             Util.TypeWrite("-----------------------------------");
             Console.ForegroundColor = ConsoleColor.Green;
             Util.TypeWriteInline(player.Name);
@@ -35,7 +31,6 @@ namespace Godsong
             Console.ResetColor();
             Util.TypeWrite("-----------------------------------");
 
-
             while (player.HP > 0 && !enemy.IsDead())
             {
                 PlayerTurn();
@@ -44,7 +39,6 @@ namespace Godsong
                 EnemyTurn();
             }
 
-            // Battle result
             if (player.HP > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -61,52 +55,61 @@ namespace Godsong
                 return BattleResult.Defeat;
             }
         }
-      
-
-        
 
         private void PlayerTurn()
         {
-            Util.TypeWrite(" ");
-            Console.ForegroundColor = ConsoleColor.Green;
             Util.TypeWrite($"\n{player.Name}'s turn!");
-            Console.ResetColor();
-
             player.ProcessEffects(enemy);
 
-            Util.TypeWrite("Choose an action");
-            Util.TypeWrite("1. Attack");
-            Util.TypeWrite("2. Use Skill");
-            Util.TypeWrite("3. Use Item");
-            Util.TypeWrite(">");
+            int actionsUsed = 0;
+            bool hasSwitched = false;
 
-//Enter key to trigger menu
-            ConsoleKeyInfo key = Console.ReadKey(intercept: true); // 'true' hides thekey press
-            switch (key.Key)
+            while (actionsUsed < 2)
             {
-                case ConsoleKey.D1:
-                    UseSkill();
-                    break;
-                case ConsoleKey.D2:
-                    UseItem();
-                    break;
-                default:
-                    Util.TypeWrite("Invalid choice!");
-                    
-                    break;
+                Util.TypeWrite("\nChoose an action:");
+                Util.TypeWrite("1. Use Skill");
+                if (!hasSwitched && actionsUsed == 1)
+                    Util.TypeWrite("2. Switch Card");
+                Util.TypeWrite(">");
 
+                ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+                Console.WriteLine();
+
+                if (key.Key == ConsoleKey.D1)
+                {
+                    if (UseSkill()) actionsUsed++;
+                }
+                else if (key.Key == ConsoleKey.D2 && !hasSwitched && actionsUsed == 1)
+                {
+                    if (SwitchCard())
+                    {
+                        hasSwitched = true;
+                    }
+                }
+                else
+                {
+                    Util.TypeWrite("Invalid choice!");
+                }
+
+                // Force skill after switch
+                if (hasSwitched && actionsUsed == 1)
+                {
+                    Util.TypeWrite("\nChoose a skill after switching:");
+                    if (UseSkill()) actionsUsed++;
+                }
             }
 
+            Util.TypeWrite("Turn ends.");
         }
 
-        private void UseSkill()
+        private bool UseSkill()
         {
             var skills = player.CurrentCard.Skills;
 
             if (skills.Count == 0)
             {
                 Util.TypeWrite("No skills available!");
-                return;
+                return false;
             }
 
             // Display skill list
@@ -114,7 +117,6 @@ namespace Godsong
             for (int i = 0; i < skills.Count; i++)
             {
                 Skill skill = skills[i];
-                // Example: "1. Last Stand - Gain 5 Defense and heal 20 HP"
                 Util.TypeWriteMultiColor(new (string, ConsoleColor)[]
                 {
                     ($"{i + 1}. ", ConsoleColor.White),
@@ -125,18 +127,13 @@ namespace Godsong
             }
 
             Util.TypeWrite("> Choose a skill by number: ");
-
-            // Read key input without Enter
             ConsoleKeyInfo key = Console.ReadKey(intercept: true);
-            int choice = key.KeyChar - '1'; // Convert '1' → 0, '2' → 1
-
-            Console.WriteLine(); // move to next line after input
+            int choice = key.KeyChar - '1';
+            Console.WriteLine();
 
             if (choice >= 0 && choice < skills.Count)
             {
                 Skill selectedSkill = skills[choice];
-
-                // Show skill usage
                 Util.TypeWriteMultiColor(new (string, ConsoleColor)[]
                 {
                     ($"{player.Name}", ConsoleColor.Green),
@@ -144,33 +141,63 @@ namespace Godsong
                     ($"{selectedSkill.Name}!", ConsoleColor.Yellow)
                 });
 
-                // Execute skill effect
                 selectedSkill.Use(player, enemy);
+                return true;
             }
             else
             {
-                Util.TypeWrite("Invalid choice! You skip your turn.");
+                Util.TypeWrite("Invalid choice! Turn skipped.");
+                return false;
             }
         }
 
-
-        private void UseItem()
+        private bool SwitchCard()
         {
-            
+            // Display available cards
+            Util.TypeWrite("Available Cards:");
+            var allCards = CardLibrary.AllCards;
+            for (int i = 0; i < allCards.Count; i++)
+            {
+                Card card = allCards[i];
+                Util.TypeWriteMultiColor(new (string, ConsoleColor)[]
+                {
+                    ($"{i + 1}. ", ConsoleColor.White),
+                    ($"{card.Name}", ConsoleColor.Yellow),
+                    (" - ", ConsoleColor.White),
+                    ($"{card.Description}", ConsoleColor.Gray)
+                });
+            }
+
+            Util.TypeWrite("> Choose a card by number: ");
+            ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+            int choice = key.KeyChar - '1';
+            Console.WriteLine();
+
+            if (choice >= 0 && choice < allCards.Count)
+            {
+                player.EquipCard(allCards[choice]);
+                Util.TypeWrite($"{player.Name} switches to {allCards[choice].Name}!");
+                return true;
+            }
+            else
+            {
+                Util.TypeWrite("Invalid choice! Cannot switch.");
+                return false;
+            }
         }
+
         private void EnemyTurn()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Util.TypeWrite($"\n{enemy.Name}'s turn!");
             Console.ResetColor();
-            
+
             enemy.ProcessEffects(player);
 
             int roll = rng.Next(1, enemy.DiceSides + 1);
             int damage = enemy.Attack + roll - player.Defense;
             if (damage < 0) damage = 0;
 
-            // Single-line, colored output
             Console.ForegroundColor = ConsoleColor.Red;
             Util.TypeWriteInline(enemy.Name);
             Console.ResetColor();
@@ -188,7 +215,6 @@ namespace Godsong
             Console.ResetColor();
 
             player.TakeDamage(damage);
-            
         }
     }
 }

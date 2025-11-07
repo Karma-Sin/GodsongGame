@@ -179,21 +179,7 @@ public static StatusEffect Haste = new StatusEffect(
 );
         // Boosts next skill's power, but could cause recoil
         public static StatusEffect Overcharge = new StatusEffect(
-            name: "Overcharge",
-            description: "Boost next skill power, but take recoil",
-            duration: 1,
-            power: 5, // example boost
-            isBuff: true,
-            tickEffect: null,
-            onApplyEffect: (player, enemy) =>
-            {
-                player.ModifyStats(); // modify next skill power
-            },
-            onExpireEffect: (player, enemy) =>
-            {
-                // handle recoil or removal
-            }
-        );
+            
 
         // Each time you take damage, gain Attack +1 (stacks)
         public static StatusEffect Rage = new StatusEffect(
@@ -207,7 +193,7 @@ public static StatusEffect Haste = new StatusEffect(
             onExpireEffect: null
         );
         // Apply Burn effect
-        StatusEffect burn = new StatusEffect(
+      public static StatusEffect burn = new StatusEffect(
             name: "Burn",
             description: "Lose HP each turn from burning",
             duration: 3,

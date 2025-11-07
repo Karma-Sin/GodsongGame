@@ -146,6 +146,25 @@ public static Skill GoblinTinkererArmor = new Skill(
         player.AddEffect(shield, enemy);
     }
 );
+
+public static Skill GoblinOilFlare = new Skill(
+    "Oil Flare",
+    "Spray flammable oil, causing the target to burn over time",
+    3, // base damage
+    SkillType.Attack,
+    (player, enemy) =>
+    {
+        // Initial damage
+        int roll = player.RollDice();
+        int damage = player.Attack + roll - enemy.Defense;
+        if (damage < 0) damage = 0;
+        Util.TypeWrite($"{player.Name} hits {enemy.Name} with Oil Flare for {damage} damage!");
+        enemy.TakeDamage(damage);
+
+        enemy.AddEffect(burn, player);
+    }
+);
+
     }
 
 }

@@ -56,15 +56,25 @@ namespace Godsong
             SkillType.Buff,
             (player, enemy) =>
             {
-                player.ApplyBuff(defense: 5, heal: 20);
+                player.ModifyStats(defense: 5, heal: 20);
             }
         );
-public static Skill HumanLunge = new Skill(
-"",
-"",
-0,
-SkillType.Attack,
-(player, enemy)=>)
+        public static Skill HumanLunge = new Skill(
+        "Lunge",
+        "Thrust forward, poking a hole in the opponents flesh causing Bleed",
+        5,      //base damage
+        SkillType.Attack,
+        (player, enemy) =>
+        {   //deal damage
+            int roll = player.RollDice();
+            int damage = player.Attack + roll - enemy.Defense;
+            if (damage < 0) damage = 0;
+            enemy.TakeDamage(damage);
+            //Apply effect
+            StatusEffect bleed = StatusEffectLibrary.Bleed.Clone();
+            enemy.AddEffect(bleed, player);
+        }
+        );
     }
 
 }

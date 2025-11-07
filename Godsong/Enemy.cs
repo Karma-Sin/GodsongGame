@@ -19,7 +19,9 @@ namespace Godsong
         
         //Rewards
         public int ExperienceReward {get; private set;}
-        public int GoldReward {get; private set;}
+        public int GoldReward { get; private set; }
+        
+
 
         // Constructor - sets up the enemy
         public Enemy(string name, int maxHP, int attack, int defense, int diceSides, int expReward, int goldReward)
@@ -99,7 +101,38 @@ namespace Godsong
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"{Name}: ");
             Console.ResetColor();
-            Console.WriteLine($"{HP}/{MaxHP} HP");  
+            Console.WriteLine($"{HP}/{MaxHP} HP");
         }
+        
+public List<StatusEffect> ActiveEffects { get; private set; } = new List<StatusEffect>();
+
+        public void AddEffect(StatusEffect effect, Player player)
+        {
+            var existing = ActiveEffects.Find(e => e.Name == effect.Name);
+            if (existing != null)
+            {
+                existing.Stack(effect.Power, effect.Duration);
+                Util.TypeWrite($"{effect.Name} stacks! Power: {existing.Power}, Duration: {existing.Duration}");
+            }
+            else
+            {
+                ActiveEffects.Add(effect);
+                effect.Apply(player, this);
+                Util.TypeWrite($"{Name} gains {effect.Name} for {effect.Duration} turn(s)!");
+            }
+        }
+
+
+        public void ProcessEffects(Player player)
+        {
+            for (int i = ActiveEffects.Count - 1; i >= 0; i--)
+            {
+                ActiveEffects[i].Tick(player, this);
+                if (ActiveEffects[i].IsExpired)
+                    ActiveEffects.RemoveAt(i);
+            }
+        }
+
+
     }
 }

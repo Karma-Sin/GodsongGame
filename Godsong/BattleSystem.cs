@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Godsong
@@ -70,6 +71,8 @@ namespace Godsong
             Console.ForegroundColor = ConsoleColor.Green;
             Util.TypeWrite($"\n{player.Name}'s turn!");
             Console.ResetColor();
+
+            player.ProcessEffects(enemy);
 
             Util.TypeWrite("Choose an action");
             Util.TypeWrite("1. Attack");
@@ -160,6 +163,8 @@ namespace Godsong
             Console.ForegroundColor = ConsoleColor.Red;
             Util.TypeWrite($"\n{enemy.Name}'s turn!");
             Console.ResetColor();
+            
+            enemy.ProcessEffects(player);
 
             int roll = rng.Next(1, enemy.DiceSides + 1);
             int damage = enemy.Attack + roll - player.Defense;

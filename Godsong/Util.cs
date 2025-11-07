@@ -32,26 +32,63 @@ namespace Godsong
             }
             Console.WriteLine();
         }
-    
+
 
 
         public static void TypeWriteMultiColor(     //Color helper
     (string text, ConsoleColor color)[] segments,
     int delay = 30,
     bool newLine = true)
-{
-    foreach (var segment in segments)
-    {
-        Console.ForegroundColor = segment.color;
-        foreach (char c in segment.text)
         {
-            Console.Write(c);
-            System.Threading.Thread.Sleep(delay);
+            foreach (var segment in segments)
+            {
+                Console.ForegroundColor = segment.color;
+                foreach (char c in segment.text)
+                {
+                    Console.Write(c);
+                    System.Threading.Thread.Sleep(delay);
+                }
+                Console.ResetColor();
+            }
+            if (newLine) Console.WriteLine();
         }
-        Console.ResetColor();
+ // Apply a status effect to a target, cloning it automatically
+    public static void ApplyStatusEffect(StatusEffect template, Player player, Enemy enemy)
+    {
+        // Create a new instance based on the template
+        StatusEffect effectInstance = new StatusEffect(
+            name: template.Name,
+            description: template.Description,
+            duration: template.Duration,
+            power: template.Power,
+            isBuff: template.IsBuff,
+            tickEffect: template.TickEffect,
+            onApplyEffect: template.OnApplyEffect,
+            onExpireEffect: template.OnExpireEffect
+        );
+
+        // Apply to enemy
+        enemy.AddEffect(effectInstance, player);
     }
-    if (newLine) Console.WriteLine();
-}
+
+        // Overload for applying to player
+        public static void ApplyStatusEffect(StatusEffect template, Enemy enemy, Player player)
+        {
+            StatusEffect effectInstance = new StatusEffect(
+                name: template.Name,
+                description: template.Description,
+                duration: template.Duration,
+                power: template.Power,
+                isBuff: template.IsBuff,
+                tickEffect: template.TickEffect,
+                onApplyEffect: template.OnApplyEffect,
+                onExpireEffect: template.OnExpireEffect
+            );
+
+            player.AddEffect(effectInstance, enemy);
+        }
+            // Clone effect (so we can reuse library effects safely)
+
 
     }
 }

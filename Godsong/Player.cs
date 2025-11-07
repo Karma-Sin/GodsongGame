@@ -3,68 +3,80 @@ using System.Collections.Generic;
 
 namespace Godsong
 {
-
     public class Player
     {
-
-        //States/buffs
-        public bool IsCountering { get; set; } = false;
-
-        //Basic information 
+        // 🔸 Basic Information
         public string Name { get; set; }
 
-        // Stats
+        // 🔸 Base Stats
+        public int BaseHP { get; private set; } = 50;
+        public int BaseAttack { get; private set; } = 5;
+        public int BaseDefense { get; private set; } = 2;
+
+        // 🔸 Current Stats
         public int MaxHP { get; private set; }
         public int HP { get; private set; }
         public int Attack { get; private set; }
         public int Defense { get; private set; }
 
-        //Dice system
-        public int DiceSides { get; private set; }
+        // 🔸 Dice
+        public int DiceSides { get; private set; } = 6;
+        private static readonly Random rand = new Random();
 
-        //Progression
+        // 🔸 Progression
         public int Gold { get; private set; }
-        public int Level { get; private set; }
+        public int Level { get; private set; } = 1;
         public int Experience { get; private set; }
 
-        //Cards(stance/class)
+        // 🔸 Card / Class System
         public Card CurrentCard { get; private set; }
 
-        //Skills
+        // 🔸 Skills
         public List<string> Skills { get; private set; }
 
-        //Constructor
+        // 🔸 States / Buffs
+        public bool IsCountering { get; private set; } = false;
+        public List<StatusEffect> ActiveEffects { get; private set; } = new List<StatusEffect>();
+
+
+        // ============================================================
+        // 🔹 Constructor
+        // ============================================================
         public Player(string name)
         {
             Name = name;
-            MaxHP = 50;
+            MaxHP = BaseHP;
             HP = MaxHP;
-            Attack = 5;
-            Defense = 2;
-            DiceSides = 6;
+            Attack = BaseAttack;
+            Defense = BaseDefense;
             Gold = 0;
-            Level = 1;
             Experience = 0;
             Skills = new List<string>();
+
+            // Equip default Human card
             Card defaultCard = CardLibrary.GetCard("Human");
             EquipCard(defaultCard);
         }
 
-        //Roll a dice (1-6)
+
+        // ============================================================
+        // 🎲 Dice Roll
+        // ============================================================
         public int RollDice()
         {
-            Random rand = new Random();
             return rand.Next(1, DiceSides + 1);
         }
 
-        // Attacking
+
+        // ============================================================
+        // ⚔️ Combat
+        // ============================================================
         public void AttackTarget(Enemy target)
         {
             int roll = RollDice();
             int damage = Attack + roll - target.Defense;
+            if (damage < 0) damage = 0;
 
-            if (damage < 0)
-                damage = 0;
             Console.WriteLine($"{Name} attacks {target.Name} and rolls a {roll}!");
             target.TakeDamage(damage);
         }
@@ -73,6 +85,7 @@ namespace Godsong
         {
             HP -= amount;
             if (HP < 0) HP = 0;
+
             Console.ForegroundColor = ConsoleColor.Green;
             Util.TypeWriteInline($"{Name}");
             Console.ResetColor();
@@ -83,58 +96,88 @@ namespace Godsong
                 Console.ForegroundColor = ConsoleColor.Green;
                 Util.TypeWriteInline($"{Name}");
                 Console.ResetColor();
-                Util.TypeWrite(" has fallen");
+                Util.TypeWrite(" has fallen.");
             }
         }
 
+
+        // ============================================================
+        // 💚 Healing
+        // ============================================================
         public void Heal(int amount)
         {
             HP += amount;
-            if (HP > MaxHP)
+            if (HP > MaxHP) HP = MaxHP;
+
+            Util.TypeWriteMultiColor(new (string, ConsoleColor)[]
             {
-                HP = MaxHP;
-                Util.TypeWriteMultiColor(new (string, ConsoleColor)[]
-                {
-                ($"{Name}",ConsoleColor.Green),
-                (" heals",ConsoleColor.White),
+                ($"{Name}", ConsoleColor.Green),
+                (" heals", ConsoleColor.White),
                 ($" {amount}", ConsoleColor.Yellow),
                 ($" HP. HP: {HP}/{MaxHP}", ConsoleColor.White)
-                });
-            }
+            });
         }
 
+
+        // ============================================================
+        // 🪄 Card / Class System
+        // ============================================================
         public void EquipCard(Card card)
         {
             CurrentCard = card;
-            Attack = 5 + card.AttackModifier;
-            MaxHP = 50 + card.HPModifier;
-            Defense = 2 + card.DefenseModifier;
+            Attack = BaseAttack + card.AttackModifier;
+            MaxHP = BaseHP + card.HPModifier;
+            Defense = BaseDefense + card.DefenseModifier;
             HP = MaxHP;
         }
 
-        //In combat stat changes
 
-        public void ApplyBuff(int attack = 0, int maxHP = 0, int defense = 0, int heal = 0)
+        // ============================================================
+        // 📈 Stat Changes
+        // ============================================================
+        public void ModifyStats(int attack = 0, int maxHP = 0, int defense = 0, int heal = 0)
         {
             Attack += attack;
             MaxHP += maxHP;
             Defense += defense;
-            Heal(heal);
+            if (heal > 0) Heal(heal);
         }
 
-        public void ApplyDebuff(int attack = 0, int maxHP = 0, int defense = 0)
+
+        // ============================================================
+        // 🛡️ Counter System
+        // ============================================================
+        public void ActivateCounter() => IsCountering = true;
+        public void DeactivateCounter() => IsCountering = false;
+
+
+        // ============================================================
+        // ☠️ Status Effects
+        // ============================================================
+        public void AddEffect(StatusEffect effect, Enemy enemy)
         {
-            Attack += attack;
-            MaxHP += maxHP;
-            Defense += defense;
+            var existing = ActiveEffects.Find(e => e.Name == effect.Name);
+            if (existing != null)
+            {
+                existing.Stack(effect.Power, effect.Duration);
+                Util.TypeWrite($"{effect.Name} stacks! Power: {existing.Power}, Duration: {existing.Duration}");
+            }
+            else
+            {
+                ActiveEffects.Add(effect);
+                effect.Apply(this, enemy);
+                Util.TypeWrite($"{Name} gains {effect.Name} for {effect.Duration} turn(s)!");
+            }
         }
-        public void ActivateCounter()
+
+        public void ProcessEffects(Enemy enemy)
         {
-            IsCountering = true;
+            for (int i = ActiveEffects.Count - 1; i >= 0; i--)
+            {
+                ActiveEffects[i].Tick(this, enemy);
+                if (ActiveEffects[i].IsExpired)
+                    ActiveEffects.RemoveAt(i);
+            }
         }
-        public void DeactivateCounter()
-        {
-            IsCountering = false;
-        }
-    } 
+    }
 }

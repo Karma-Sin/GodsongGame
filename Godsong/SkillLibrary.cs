@@ -93,54 +93,59 @@ Random rng = new Random();
 );
 
 public static Skill GoblinLanceBarrage = new Skill(
-"Lance Barrage",
-"Throw 3 makeshift spears",
-0,
-SkillType.Attack,
-(player, enemy) =>
-{
-Random rng = new Random();
-                int roll = rng.Next(1, player.DiceSides + 1);
-                int damage = player.Attack + roll - enemy.Defense;
-                if (damage < 0) damage = 0;
-                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
-                enemy.TakeDamage(damage);
-
-Random rng = new Random();
-                int roll = rng.Next(1, player.DiceSides + 1);
-                int damage = player.Attack + roll - enemy.Defense;
-                if (damage < 0) damage = 0;
-                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
-                enemy.TakeDamage(damage);
-
-Random rng = new Random();
-                int roll = rng.Next(1, player.DiceSides + 1);
-                int damage = player.Attack + roll - enemy.Defense;
-                if (damage < 0) damage = 0;
-                Util.TypeWrite($"{player.Name} hits {enemy.Name} with Quick Slash for {damage} damage!");
-                enemy.TakeDamage(damage);
-}
+    "Lance Barrage",
+    "Throw 3 makeshift spears",
+    0,
+    SkillType.Attack,
+    (player, enemy) =>
+    {
+        Random rng = new Random();
+        for (int i = 0; i < 3; i++)
+        {
+            int roll = rng.Next(1, player.DiceSides + 1);
+            int damage = player.Attack + roll - enemy.Defense;
+            if (damage < 0) damage = 0;
+            Util.TypeWrite($"{player.Name} throws a spear for {damage} damage!");
+            enemy.TakeDamage(damage);
+        }
+    }
 );
 
 public static Skill GoblinTinkererArmor = new Skill(
-"Tinkerer's Armor",
-"Muster up various items from your loot bag to form Armor (Crumbles every turn)",
-5,
-SkillType.Attack,
-(player, enemy) =>
-{
-            StatusEffect shield = StatusEffectLibrary.Shield.Clone();
-shield.Power = 10;
-shield.Duration = 3;
+    "Tinkerer's Armor",
+    "Muster up various items from your loot bag to form Armor (Crumbles every turn)",
+    0,
+    SkillType.Buff,
+    (player, enemy) =>
+    {
+        StatusEffect shield = StatusEffectLibrary.Shield.Clone();
+        shield.Power = 10;    // starting defense bonus
+        shield.Duration = 3;
 
-shield.TickEffect = (player,enemy)=>
+        // When applied
+        shield.OnApplyEffect = (p, e) =>
+        {
+            p.ModifyStats(defense: 10);
+            Util.TypeWrite($"{p.Name} forms crude armor from scraps! (+10 Defense)");
+        };
+
+        // Each turn: crumbles by 2 defense
+        shield.TickEffect = (p, e) =>
+        {
+            p.ModifyStats(defense: -2);
+            Util.TypeWrite($"{p.Name}'s armor crumbles slightly (-2 Defense)");
+        };
+
+        // When it expires: notify
+        shield.OnExpireEffect = (p, e) =>
 {
-player.ModifyStats(defense : -2);
-}
-            enemy.AddEffect(shield, player);
-}
+    p.ModifyStats(defense: - (shield.Power - 2 * (3 - shield.Duration))); 
+    Util.TypeWrite($"{p.Name}'s makeshift armor falls apart completely.");
+};
+
+        player.AddEffect(shield, enemy);
+    }
 );
-
     }
 
 }

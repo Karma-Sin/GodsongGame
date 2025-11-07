@@ -206,6 +206,28 @@ public static StatusEffect Haste = new StatusEffect(
             onApplyEffect: null,
             onExpireEffect: null
         );
+        // Apply Burn effect
+        StatusEffect burn = new StatusEffect(
+            name: "Burn",
+            description: "Lose HP each turn from burning",
+            duration: 3,
+            power: 2, // damage per turn
+            isBuff: false,
+            tickEffect: (p, e) =>
+            {
+                e.TakeDamage(2);
+                Util.TypeWrite($"{e.Name} suffers 2 burn damage!");
+            },
+            onApplyEffect: (p, e) =>
+            {
+                Util.TypeWrite($"{e.Name} is set on fire!");
+            },
+            onExpireEffect: (p, e) =>
+            {
+                Util.TypeWrite($"{e.Name} stops burning.");
+            }
+        );
+
 }
 
     }

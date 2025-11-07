@@ -129,7 +129,8 @@ public static Skill GoblinTinkererArmor = new Skill(
 SkillType.Attack,
 (player, enemy) =>
 {
-
+            StatusEffect bleed = StatusEffectLibrary.Bleed.Clone();
+            enemy.AddEffect(bleed, player);
 }
 );
 

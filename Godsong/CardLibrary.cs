@@ -9,38 +9,41 @@ namespace Godsong
 
         static CardLibrary()
         {
-            AddHumanCards();
-            AddGoblinCards();
-            //TODO add more card types
+            AddHumanCard();
+            AddGoblinCard();
         }
 
-        private static void AddHumanCards()
+        private static void AddHumanCard()
         {
-            var humanSkills = new List<Skill>
-            {
-                SkillLIbrary.HumanStrike,
-                SkillLIbrary.HumanLunge,
-                SkillLIbrary.HumanLaststand,
-                SkillLIbrary.HumanCounter
-
-            };
-
-            AllCards.Add(new Card("Human", "Balanced warrior of endurance", 0, 0, 0, humanSkills));
+            AllCards.Add(new CardTemplate(
+                "Human",
+                "Balanced warrior of endurance",
+                0, 0, 0,
+                new List<Skill>
+                {
+                    SkillLIbrary.HumanStrike,
+                    SkillLIbrary.HumanLunge,
+                    SkillLIbrary.HumanLaststand,
+                    SkillLIbrary.HumanCounter
+                }
+            ).CreateCard());
         }
 
-        private static void AddGoblinCards()
+        private static void AddGoblinCard()
         {
-            var goblinSkills = new List<Skill>
-            {
-                SkillLibrary.GoblinSuckerPunch,
-SkillLibary,GoblinSpearBarrage,
-SkillLibrary.GoblinTinkererArmor,
-SkillLibrary.GoblinOilFlare
-            };
-
-            AllCards.Add(new Card("Goblin", "Devious trickster wielding scraps and spite", 2, 1, 1));
-          }
-  
+            AllCards.Add(new CardTemplate(
+                "Goblin",
+                "Devious trickster wielding scraps and spite",
+                2, 1, 1,
+                new List<Skill>
+                {
+                    SkillLIbrary.GoblinSuckerPunch,
+                    SkillLIbrary.GoblinLanceBarrage,
+                    SkillLIbrary.GoblinTinkererArmor,
+                    SkillLIbrary.GoblinOilFlare
+                }
+            ).CreateCard());
+        }
 
         public static Card? GetCard(string name)
         {

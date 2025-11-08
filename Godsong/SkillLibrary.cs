@@ -159,6 +159,7 @@ namespace Godsong
             }
         );
 
+        //RAGEMAGE Skills
 // Basic ranged attack
 public static Skill FuryBolt = new Skill(
     "Fury Bolt",
